@@ -1,0 +1,34 @@
+To test multi-node chat:
+
+Open a second terminal, start another node on a different port:
+
+PORT=5001 python node.py
+
+
+Now you have:
+
+Node 1 → http://127.0.0.1:5000
+
+Node 2 → http://127.0.0.1:5001
+
+Register them as peers. From Node 1:
+
+curl -X POST http://127.0.0.1:5000/peers/register \
+     -H "Content-Type: application/json" \
+     -d '{"host": "http://127.0.0.1:5001"}'
+
+
+From Node 2:
+
+curl -X POST http://127.0.0.1:5001/peers/register \
+     -H "Content-Type: application/json" \
+     -d '{"host": "http://127.0.0.1:5000"}'
+
+
+Open two clients, one pointing to each node:
+
+python pyqt-client.py --port 5000
+python pyqt-client.py --port 5001
+
+
+Now, when you send "hello" from one client, the other should receive it via the blockchain transaction broadcast 🎯

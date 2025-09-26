@@ -1,0 +1,20 @@
+lsof -i :5000 to see whhat is running on this port
+kill -9 996 to kill the processes
+pip3 install networkx  --break-system-package
+-----------------------------------------------------
+run this for project to start 
+cd ~/Desktop/blockchain/project2/p2p_blockchain_chat
+source venv/bin/activate
+to run our code 
+
+pip3 install networkx  --break-system-package
+-----------------------------------------------------
+# Node A
+export PORT=5001
+export PEERS=http://127.0.0.1:5002
+python3 node.py
+
+# Node B
+export PORT=5002
+export PEERS=http://127.0.0.1:5001
+python3 node.py
