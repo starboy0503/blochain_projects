@@ -1,34 +1,107 @@
-To test multi-node chat:
+🖥 Step 1: Start Node A
+cd ~/Desktop/blockchain/project2/p2p_blockchain_chat
+export PORT=5001
+python3 node.py
 
-Open a second terminal, start another node on a different port:
 
-PORT=5001 python node.py
+✅ Should print:
+
+ * Running on http://127.0.0.1:5001
+
+🖥 Step 2: Start Node B
+cd ~/Desktop/blockchain/project2nodeb/p2p_blockchain_chat
+export PORT=5002
+python3 node.py
 
 
-Now you have:
+✅ Should print:
 
-Node 1 → http://127.0.0.1:5000
+ * Running on http://127.0.0.1:5002
 
-Node 2 → http://127.0.0.1:5001
+🖥 Step 3: Register Peers
 
-Register them as peers. From Node 1:
+Tell Node A about Node B:
 
-curl -X POST http://127.0.0.1:5000/peers/register \
+curl -X POST http://127.0.0.1:5001/peers/register \
+     -H "Content-Type: application/json" \
+     -d '{"host": "http://127.0.0.1:5002"}'
+
+
+Tell Node B about Node A:
+
+curl -X POST http://127.0.0.1:5002/peers/register \
      -H "Content-Type: application/json" \
      -d '{"host": "http://127.0.0.1:5001"}'
 
 
-From Node 2:
+✅ Check:
 
-curl -X POST http://127.0.0.1:5001/peers/register \
-     -H "Content-Type: application/json" \
-     -d '{"host": "http://127.0.0.1:5000"}'
-
-
-Open two clients, one pointing to each node:
-
-python pyqt-client.py --port 5000
-python pyqt-client.py --port 5001
+curl http://127.0.0.1:5001/peers
+curl http://127.0.0.1:5002/peers
 
 
-Now, when you send "hello" from one client, the other should receive it via the blockchain transaction broadcast 🎯
+Each should list the other.
+
+🖥 Step 4: Run Tkinter Chat Clients
+
+Node A’s client:
+
+cd ~/Desktop/blockchain/project2/p2p_blockchain_chat
+python3 tkinter-client.py 5001
+
+
+Node B’s client:
+
+cd ~/Desktop/blockchain/project2nodeb/p2p_blockchain_chat
+python3 tkinter-client.py 5002
+
+
+✅ Title bar shows which node each client is connected to.
+
+🖥 Step 5: Send a Message
+
+In Node B’s client:
+
+Click Peers → should show http://127.0.0.1:5001.
+
+Select it from dropdown.
+
+Type "Hello from Node B" → press Send.
+
+Node A’s 📥 box shows:
+
+(pending) http://127.0.0.1:5002 → You: Hello from Node B
+
+
+In either client, click Mine.
+
+Transaction is mined into a block.
+
+Node A’s 📥 shows:
+
+http://127.0.0.1:5002 → You: Hello from Node B
+
+🖥 Step 6: Debugging (if inbox is empty)
+
+Check pending messages:
+
+curl http://127.0.0.1:5001/pending | jq .
+
+
+Check full blockchain:
+
+curl http://127.0.0.1:5001/chain | jq .
+
+
+If pending is empty → message never arrived (check peers).
+If pending has the message but Tkinter shows nothing → inbox function is not refreshing.
+
+✅ Final Flow Recap
+
+Send → goes into /pending immediately.
+
+Mine → moves it from /pending to /chain.
+
+Inbox → shows (pending) messages + confirmed ones.
+
+Works between Node A (5001) and Node B (5002).
