@@ -1,0 +1,98 @@
+
+project3/
+│── blockchain.py        # Blockchain logic (immutability, tally)
+│── wallet_utils.py      # Key generation (students & officer)
+│── register_batch.py    # Tkinter app for registering voters/officer
+│── app.py               # Main voting + dashboard Tkinter app
+│── *.json               # Generated keys (e.g., adi.json, officer.json)
+│── all_voters.csv       # Master list of all keys (officer only)
+
+
+
+
+
+
+
+
+
+Register voters & officer
+
+Run:
+
+python3 register_batch.py
+
+
+Enter number of voters → enter names.
+
+System creates:
+
+One JSON file per voter (adi.json, bob.json, …).
+
+officer.json for the election officer.
+
+all_voters.csv (officer’s reference).
+
+Distribute keys
+
+Each student gets only their own .json file.
+
+Officer keeps officer.json + all_voters.csv.
+
+Voting
+
+Run:
+
+python3 app.py
+
+
+Students → click “Select JSON File” → choose their .json.
+
+They see candidate options → cast vote once.
+
+After voting, click ⛏ Mine Block to finalize transactions.
+
+Officer dashboard
+
+Officer logs in with officer.json.
+
+Dashboard shows:
+
+List of voters who voted.
+
+Current tally per candidate.
+
+Bar graph (auto-updated when refreshed/mined).
+
+Officer can:
+
+Refresh Dashboard to see updates.
+
+Mine Block to confirm votes into blockchain.
+
+🔑 Key Concepts
+
+Blockchain ensures:
+
+Votes are immutable once mined.
+
+Each student can vote only once.
+
+Keys:
+
+Every voter/officer has their own RSA keypair stored in JSON.
+
+Login is based on selecting the correct JSON file.
+
+Transparency:
+
+Officer dashboard provides live view of votes.
+
+Graph gives instant vote distribution visualization.
+
+⚠️ Security Notes
+
+Private keys inside .json files must be kept secret.
+
+all_voters.csv should be for officer eyes only (contains all keys).
+
+Students should never see other students’ JSON files.
